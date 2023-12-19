@@ -1,0 +1,21 @@
+
+  <mat-nav-list>
+
+    <mat-list-item>
+      <button routerLink="/home/admin" mat-button><mat-icon>dashboard</mat-icon> Dashboard</button>
+    </mat-list-item>
+    <mat-list-item>
+      <button routerLink="/user/info" mat-button><mat-icon>account_circle</mat-icon>My Personal Informations</button>
+    </mat-list-item>
+    <mat-list-item>
+      <button routerLink="/user/get/all" mat-button><mat-icon>supervised_user_circle</mat-icon>List Users</button>
+    </mat-list-item>
+
+
+
+    <mat-list-item>
+      <button mat-button (click)="logout()"><mat-icon>exit_to_app</mat-icon>Logout</button>
+    </mat-list-item>
+
+  </mat-nav-list>
+

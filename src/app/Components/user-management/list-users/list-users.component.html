@@ -1,0 +1,214 @@
+<!--Header-->
+
+<mat-toolbar class="mat-elevation-z8">
+  <button (click)="drawer.toggle()" mat-icon-button>
+    <mat-icon>menu</mat-icon>
+  </button>
+  <span>Material UI Tutorial</span>
+  <span class="example-spacer"></span>
+  <button routerLink="" mat-button>Home</button>
+  <button [matMenuTriggerFor]="lvl1master" mat-button>Master</button>
+  <mat-menu #lvl1master="matMenu">
+    <button [matMenuTriggerFor]="company" mat-menu-item>Company</button>
+    <button [matMenuTriggerFor]="customer" mat-menu-item>Customer</button>
+    <button [matMenuTriggerFor]="product" mat-menu-item>Product</button>
+  </mat-menu>
+
+  <mat-menu #company="matMenu">
+    <button mat-menu-item>Term</button>
+    <button mat-menu-item>Tax</button>
+    <button mat-menu-item>Currency</button>
+  </mat-menu>
+  <mat-menu #customer="matMenu">
+    <button mat-menu-item>Type</button>
+    <button mat-menu-item>Tax</button>
+  </mat-menu>
+  <mat-menu #product="matMenu">
+    <button mat-menu-item>Category</button>
+    <button [matMenuTriggerFor]="variant" mat-menu-item>Variant</button>
+    <button mat-menu-item>UOM</button>
+  </mat-menu>
+
+  <mat-menu #variant="matMenu">
+    <button mat-menu-item>Color</button>
+    <button mat-menu-item>Size</button>
+  </mat-menu>
+
+  <button routerLink="input" mat-button>Input</button>
+  <button routerLink="autocomplete" mat-button>Autocomplete</button>
+  <button (click)="badgevisibility()"  mat-icon-button>
+    <mat-icon matBadgeColor="accent" matBadge="15" [matBadgeHidden]="badgevisible" matBadgeSize="small">notifications</mat-icon>
+  </button>
+</mat-toolbar>
+
+<!--Header End-->
+
+
+<!-- mat drawer howa dak l boutton li katbrk 3lih bach tban lik side bar -->
+<!-- Container wsto side bar w l content d l page -->
+
+<mat-drawer-container autosize>
+
+
+  <!-- Side bar -->
+  <mat-drawer #drawer opened="true" mode="side" position="start" style="width: 240px;">
+  <app-side-bar-admin></app-side-bar-admin>
+  </mat-drawer>
+
+  <!-- Side Bar End-->
+
+
+
+  <!-- Content -->
+  <mat-drawer-content>
+    <div style="min-height: 600px;">
+
+<br>
+
+
+      <div class="container">
+        <div class="card mt-4">
+          <div class="card-body d-flex justify-content-between align-items-center">
+            <!-- Assuming you have imported the necessary PrimeNG styles in your component or global styles -->
+            <button pButton type="button" (click)="showDialog()" class="p-button-success">
+              <i class="pi pi-user"></i>&nbsp;Create User
+            </button>
+
+            <button pButton type="button" (click)="deleteAllUsers()" class="p-button-danger">
+              <i class="pi pi-trash"></i>&nbsp;Delete Users
+            </button>
+          </div>
+          <br>
+
+          <p-dialog header="Create User" [(visible)]="visible" position="top" [style]="{width: '50vw'}">
+            <div class="alert alert-success mt-3" *ngIf="showSuccessMessage">
+              User created successfully!
+            </div>
+
+            <form [formGroup]="userForm" (ngSubmit)="createUser()">
+              <div class="mb-3">
+                <label for="firstName" class="form-label">First Name:</label>
+                <input type="text" id="firstName" formControlName="firstName" class="form-control">
+              </div>
+
+              <div class="mb-3">
+                <label for="lastName" class="form-label">Last Name:</label>
+                <input type="text" id="lastName" formControlName="lastName" class="form-control">
+              </div>
+
+              <div class="mb-3">
+                <label for="email" class="form-label">
+                  Email<span style="color: red;">*</span>
+                </label>
+
+                <input type="email" id="email" formControlName="email" class="form-control" placeholder="xyz@gmail.com">
+              </div>
+
+              <div class="mb-3">
+                <label for="password" class="form-label">Password:</label>
+                <input type="password" id="password" formControlName="password" class="form-control">
+              </div>
+
+              <div class="mb-3">
+                <label for="role" class="form-label">Role:</label>
+                <select id="role" formControlName="role" class="form-select">
+                  <option value="USER">User</option>
+                  <option value="ADMIN">Admin</option>
+                </select>
+              </div>
+
+              <div class="mt-3">
+                <button type="submit" pButton label="Create" class="btn btn-primary"></button>
+              </div>
+
+            </form>
+
+          </p-dialog>
+
+          <div class="card-header">
+            <div class="card-body" style="max-height: 200px;">
+              <h5 class="card-title fw-semibold mb-4">Liste des Utilisateurs</h5>
+              <p class="mb-0">Visualiser les utilisateurs existants</p>
+            </div>
+          </div>
+
+          <div class="card-body">
+            <!-- Search input for filtering -->
+            <input type="text" (input)="applyFilter($event)" placeholder="Filter data" class="form-control rounded-3">
+
+
+            <!-- Display filtered users with pagination -->
+            <div class="table-responsive">
+            <table class="table text-nowrap mb-0 align-middle text-center">
+              <thead>
+              <tr>
+                <th>Nom</th>
+                <th>Prenom</th>
+                <th>Email</th>
+                <th>Actions</th>
+              </tr>
+              </thead>
+              <tbody>
+              <!-- Loop through the filteredUsers array based on the current page -->
+              <tr *ngFor="let user of filteredUsers.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)">
+                <td>{{user.firstName}}</td>
+                <td>{{user.lastName}}</td>
+                <td>{{user.email}}</td>
+                <td>
+                  <button pButton type="button" icon="pi pi-trash" (click)="deleteUser(user.id)"></button>
+                  &nbsp;<button pButton type="button" icon="pi pi-pencil" (click)="updateUser(user.id)"></button>
+                </td>
+              </tr>
+
+              </tbody>
+
+            </table>
+            </div>
+
+
+            <div class="d-flex justify-content-between mt-3">
+              <!-- Show dropdown -->
+              <div class="d-flex align-items-center">
+                <label for="itemsPerPage" class="mb-0 me-2">Show </label>
+                <select id="itemsPerPage" [(ngModel)]="itemsPerPage" (change)="updatePagination()" class="form-select">
+                  <option *ngFor="let option of itemsPerPageOptions" [value]="option">{{ option }}</option>
+                </select>
+              </div>
+
+              <!-- Pagination info -->
+              <div>
+          <span class="pagination-info fw-semibold">
+            Showing {{ (currentPage - 1) * itemsPerPage + 1 }} to
+            {{ Math.min(currentPage * itemsPerPage, filteredUsers.length) }} of {{ filteredUsers.length }} users
+          </span>
+              </div>
+
+              <!-- Pagination controls -->
+
+                <div class="d-flex justify-content-end">
+                  <button pButton type="button" class="p-button-sm p-button-outline p-button-primary me-1"
+                          (click)="currentPage = currentPage - 1" [disabled]="currentPage === 1">
+                    Previous
+                  </button>
+                  {{ currentPage }} / {{ Math.ceil(filteredUsers.length / itemsPerPage) }}
+                  <button pButton type="button" class="p-button-sm p-button-outline p-button-primary ms-1"
+                          (click)="currentPage = currentPage + 1"
+                          [disabled]="currentPage === Math.ceil(filteredUsers.length / itemsPerPage)">
+                    Next
+                  </button>
+
+              </div>
+            </div>
+
+
+            </div>
+    </div>
+      </div>
+    </div>
+
+  </mat-drawer-content>
+
+  <!--Content End -->
+
+
+</mat-drawer-container>
